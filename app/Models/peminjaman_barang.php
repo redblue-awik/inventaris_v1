@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class Peminjaman extends Model
+#[Table('peminjaman_barangs')]
+#[Fillable(['id', 'barang_id', 'nama_peminjam', 'tanggal_pinjam', 'tanggal_kembali'])]
+class peminjaman_barang extends Model
 {
-    use HasFactory;
-    protected $fillable = ['barang_id', 'peminjam', 'tgl_pinjam', 'tgl_kembali', 'jumlah', 'status'];
-    protected $casts = ['tgl_pinjam' => 'date', 'tgl_kembali' => 'date'];
-    public function barang() { return $this->belongsTo(Barang::class); }
+    public function barang()
+    {
+        return $this->belongsTo(barang::class);
+    }
 }
