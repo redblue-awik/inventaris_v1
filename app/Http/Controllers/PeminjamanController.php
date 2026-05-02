@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\peminjaman_barang;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class PeminjamanController extends Controller
 {
