@@ -2,56 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barang;
-use App\Models\Peminjaman;
+use App\Models\peminjaman_barang;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class PeminjamanController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $peminjamans = Peminjaman::with('barang')->orderBy('created_at', 'desc')->get();
-        $barangs = Barang::where('stok', '>', 0)->get();
-        return view('peminjaman.index', compact('peminjamans', 'barangs'));
+        $peminjamans = peminjaman_barang::with('barang')->orderBy('created_at', 'desc')->get();
+        return view('peminjaman', compact('peminjamans'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'barang_id' => 'required|exists:barangs,id',
-            'peminjam' => 'required|string',
-            'tgl_pinjam' => 'required|date',
-            'jumlah' => 'required|integer|min:1'
-        ]);
-
-        $barang = Barang::findOrFail($validated['barang_id']);
-        if ($barang->stok < $validated['jumlah']) {
-            return back()->withErrors(['jumlah' => 'Stok tidak mencukupi']);
-        }
-
-        $barang->stok -= $validated['jumlah'];
-        $barang->save();
-
-        $validated['status'] = 'Dipinjam';
-        Peminjaman::create($validated);
-
-        return redirect()->route('peminjaman.index')->with('success', 'Peminjaman berhasil');
+        //
     }
 
-    public function kembali(Peminjaman $peminjaman)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        if ($peminjaman->status == 'Dikembalikan') {
-            return back()->withErrors('Sudah dikembalikan');
-        }
+        //
+    }
 
-        $peminjaman->status = 'Dikembalikan';
-        $peminjaman->tgl_kembali = now();
-        $peminjaman->save();
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
 
-        $barang = $peminjaman->barang;
-        $barang->stok += $peminjaman->jumlah;
-        $barang->save();
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
 
-        return redirect()->route('peminjaman.index')->with('success', 'Barang dikembalikan');
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

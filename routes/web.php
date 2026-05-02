@@ -1,27 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
-use App\Http\Controllers\LaporanController;
+use Illuminate\Support\Facades\Route;
 
-// Route resource untuk Barang (otomatis menyediakan index, create, store, edit, update, destroy)
-Route::resource('barang', BarangController::class);
+Route::get('/login', [AuthController::class, 'indexLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+Route::get('/register', [AuthController::class, 'indexRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Route untuk Peminjaman
-Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
-Route::post('/peminjaman/{peminjaman}/kembali', [PeminjamanController::class, 'kembali'])->name('peminjaman.kembali');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::get('/barang', [BarangController::class, 'index'])->name('barang');
 
-// Route untuk Laporan
-Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-
-// Halaman utama redirect ke barang
-Route::get('/', function () {
-    return redirect()->route('barang.index');
-});
-
-// Route tes (opsional)
-Route::get('/tes', function () {
-    return "OK";
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
 });
