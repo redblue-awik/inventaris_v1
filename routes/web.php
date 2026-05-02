@@ -6,11 +6,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
 Route::get('/login', [AuthController::class, 'indexLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::get('/register', [AuthController::class, 'indexRegister'])->name('register');
