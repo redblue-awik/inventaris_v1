@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'dapartemen', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -28,5 +28,25 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function permohonan()
+    {
+        return $this->hasMany(permintaan::class, 'permohonan_id');
+    }
+
+    public function disetujui()
+    {
+        return $this->hasMany(permintaan::class, 'disetujui_oleh');
+    }
+
+    public function staff()
+    {
+        return $this->hasMany(mutasi_barang::class, 'user_id');
+    }
+
+    public function referensi()
+    {
+        return $this->hasMany(mutasi_barang::class, 'referensi_id');
     }
 }
