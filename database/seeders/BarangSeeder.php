@@ -10,14 +10,28 @@ class BarangSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['nama_barang' => 'Laptop Asus ROG', 'jumlah' => 10, 'kondisi' => 'Baik'],
-            ['nama_barang' => 'Proyektor Epson', 'jumlah' => 5, 'kondisi' => 'Baik'],
-            ['nama_barang' => 'Kabel HDMI', 'jumlah' => 20, 'kondisi' => 'Baik'],
-            ['nama_barang' => 'Mouse Logitech', 'jumlah' => 15, 'kondisi' => 'Baik'],
-            ['nama_barang' => 'Keyboard Mechanical', 'jumlah' => 8, 'kondisi' => 'Baik'],
-            ['nama_barang' => 'Monitor LG 24 inch', 'jumlah' => 6, 'kondisi' => 'Baik'],
-            ['nama_barang' => 'Printer Canon', 'jumlah' => 4, 'kondisi' => 'Rusak'],
-            ['nama_barang' => 'Scanner Epson', 'jumlah' => 3, 'kondisi' => 'Baik'],
+            [
+                'kategori_id' => 1,
+                'supplier_id' => 1,
+                'kode_barang' => 'BRG001',
+                'nama_barang' => 'Laptop Asus ROG',
+                'satuan' => 'Unit',
+                'stok_saat_ini' => 10,
+                'stok_minimum' => 2,
+                'kondisi_rak' => 'Rak A1',
+                'kondisi' => 'baik',
+            ],
+            [
+                'kategori_id' => 1,
+                'supplier_id' => 1,
+                'kode_barang' => 'BRG002',
+                'nama_barang' => 'Printer Canon',
+                'satuan' => 'Unit',
+                'stok_saat_ini' => 4,
+                'stok_minimum' => 1,
+                'kondisi_rak' => 'Rak B1',
+                'kondisi' => 'rusak',
+            ],
         ];
 
         foreach ($data as $item) {
