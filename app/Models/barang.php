@@ -19,4 +19,14 @@ class barang extends Model
     {
         return $this->hasMany(mutasi_barang::class);
     }
+
+    public function kategori()
+    {
+        return $this->belongsTo(kategori::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(supplier::class);
+    }
 }
