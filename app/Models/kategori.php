@@ -10,5 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['id', 'nama_kategori', 'deskripsi'])]
 class kategori extends Model
 {
-    //
+    public function barang()
+    {
+        return $this->hasMany(barang::class);
+    }
 }
