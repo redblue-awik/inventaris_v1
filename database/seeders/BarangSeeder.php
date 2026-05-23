@@ -18,7 +18,7 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'stok_saat_ini' => 10,
                 'stok_minimum' => 2,
-                'kondisi_rak' => 'Rak A1',
+                'lokasi_rak' => 'Rak A1',
                 'kondisi' => 'baik',
             ],
             [
@@ -29,7 +29,7 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'stok_saat_ini' => 4,
                 'stok_minimum' => 1,
-                'kondisi_rak' => 'Rak B1',
+                'lokasi_rak' => 'Rak B1',
                 'kondisi' => 'rusak',
             ],
         ];
