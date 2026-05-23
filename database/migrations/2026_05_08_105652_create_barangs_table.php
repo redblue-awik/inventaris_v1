@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('stok_saat_ini');
             $table->integer('stok_minimum');
             $table->string('lokasi_rak');
-            $table->enum('kondisi', ['baik', 'rusak']);
+            $table->enum('kondisi', ['baik', 'rusak', 'kadaluarsa']);
             $table->timestamps();
         });
     }
