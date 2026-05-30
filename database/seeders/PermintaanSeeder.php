@@ -3,41 +3,61 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\permintaan;
-use App\Models\barang;
+use App\Models\Permintaan;
+use App\Models\Barang;
 use App\Models\User;
+use Carbon\Carbon;
 
 class PermintaanSeeder extends Seeder
 {
     public function run(): void
     {
-        if (User::count() < 2) {
-            User::factory(5)->create();
-        }
+        $barangs = Barang::all();
+        $users = User::all();
 
-        $users = User::all()->pluck('id')->toArray();
-        $barangs = barang::all();
+        $keperluan = ['Kegiatan pembelajaran', 'Praktikum RPL', 'Administrasi kantor', 'Kebutuhan ruang guru', 'Persiapan ujian', 'Kegiatan ekstrakurikuler'];
 
-        $statuses = ['menunggu', 'disetujui', 'ditolak', 'diserahkan'];
+        $nomor = 1;
 
         foreach ($barangs as $barang) {
-            for ($i = 0; $i < rand(1, 3); $i++) {
-                $jumlah = rand(1, 5);
-                $status = $statuses[array_rand($statuses)];
-                $jumlah_disetujui = in_array($status, ['disetujui', 'diserahkan']) ? $jumlah : null;
-                $disetujui_oleh = in_array($status, ['disetujui', 'diserahkan']) ? User::inRandomOrder()->first()->id : null;
+            // Menunggu
+            Permintaan::create([
+                'permohonan_id' => $users->random()->id,
+                'barang_id' => $barang->id,
+                'no_permintaan' => 'REQ' . now()->format('Ymd') . str_pad($nomor++, 3, '0', STR_PAD_LEFT),
+                'jumlah_diminta' => rand(1, 3),
+                'jumlah_disetujui' => null,
+                'disetujui_oleh' => null,
+                'keperluan' => fake()->randomElement($keperluan),
+                'status' => 'menunggu',
+                'created_at' => Carbon::now()->subDays(rand(1, 15)),
+            ]);
 
-                permintaan::create([
-                    'permohonan_id' => $users[array_rand($users)],
-                    'disetujui_oleh' => $disetujui_oleh,
-                    'barang_id' => $barang->id,
-                    'no_permintaan' => 'REQ' . str_pad((string) rand(1, 9999), 4, '0', STR_PAD_LEFT),
-                    'jumlah_diminta' => $jumlah,
-                    'jumlah_disetujui' => $jumlah_disetujui,
-                    'keperluan' => fake()->sentence(),
-                    'status' => $status,
-                ]);
-            }
+            // Disetujui
+            Permintaan::create([
+                'permohonan_id' => $users->random()->id,
+                'barang_id' => $barang->id,
+                'no_permintaan' => 'REQ' . now()->format('Ymd') . str_pad($nomor++, 3, '0', STR_PAD_LEFT),
+                'jumlah_diminta' => 2,
+                'jumlah_disetujui' => 2,
+                'disetujui_oleh' => $users->random()->id,
+                'keperluan' => fake()->randomElement($keperluan),
+                'status' => 'disetujui',
+                'created_at' => Carbon::now()->subDays(rand(1, 10)),
+            ]);
+
+            // Diserahkan
+            Permintaan::create([
+                'permohonan_id' => $users->random()->id,
+                'barang_id' => $barang->id,
+                'no_permintaan' => 'REQ' . now()->format('Ymd') . str_pad($nomor++, 3, '0', STR_PAD_LEFT),
+                'jumlah_diminta' => 1,
+                'jumlah_disetujui' => 1,
+                'disetujui_oleh' => $users->random()->id,
+                'keperluan' => fake()->randomElement($keperluan),
+                'status' => 'diserahkan',
+                'created_at' => Carbon::now()->subDays(rand(1, 5)),
+            ]);
         }
     }
 }

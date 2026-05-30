@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\barang;
+use App\Models\kategori;
+use App\Models\supplier;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -13,16 +15,11 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barangs = barang::orderBy('created_at', 'desc')->get();
-        return view('barang', compact('barangs'));
-    }
+        $barangs = barang::with('kategori', 'supplier')->latest()->get();
+        $kategoris = kategori::all();
+        $suppliers = supplier::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return view('barang', compact('barangs', 'kategoris', 'suppliers'));
     }
 
     /**
@@ -30,23 +27,19 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'stok_saat_ini' => 'required|integer|min:0',
+            'stok_minimum' => 'required|integer|min:2',
+            'lokasi_rak' => 'required|string|max:255',
+            'kondisi' => 'required|in:baik,rusak,kadaluarsa',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        barang::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return redirect()->back()->with('success', 'Barang berhasil ditambahkan.');
     }
 
     /**
@@ -54,7 +47,21 @@ class BarangController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $barang = barang::findOrFail($id);
+
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'stok_saat_ini' => 'required|integer|min:0',
+            'stok_minimum' => 'required|integer|min:2',
+            'lokasi_rak' => 'required|string|max:255',
+            'kondisi' => 'required|in:baik,rusak,kadaluarsa',
+        ]);
+
+        $barang->update($request->all());
+
+        return redirect()->back()->with('success', 'Barang berhasil diperbarui.');
     }
 
     /**
@@ -62,6 +69,8 @@ class BarangController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        barang::findOrFail($id)->delete();
+
+        return redirect()->back()->with('success', 'Barang berhasil dihapus.');
     }
 }

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Autentikasi') - NexStock</title>
+    <link rel="icon" href="My-Inventory.png" type="image/png">
+    <title>@yield('title', 'Autentikasi') - My-Inventory</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -30,7 +31,7 @@
             class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-indigo-600/30 mb-4">
             <i class="fas fa-cube text-3xl text-white"></i>
         </div>
-        <h2 class="text-3xl font-bold text-slate-900">NexStock</h2>
+        <h2 class="text-3xl font-bold text-slate-900">My-Inventory</h2>
         <p class="text-slate-500 mt-2">@yield('subtitle', 'Sistem Manajemen Inventaris')</p>
     </div>
 
