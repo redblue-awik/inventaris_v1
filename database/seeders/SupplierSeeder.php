@@ -12,7 +12,7 @@ class SupplierSeeder extends Seeder
         $data = [
             [
                 'nama_supplier' => 'PT. Sumber Perkasa',
-                'kontak_person' => 'Budi Santoso',
+                'kontak_person' => 'Andi Saputra',
                 'telepon' => '081234567890',
                 'email' => 'supplier@example.com',
                 'alamat' => 'Jl. Sudirman No.1',

@@ -13,7 +13,7 @@ class BarangSeeder extends Seeder
             [
                 'kategori_id' => 1,
                 'supplier_id' => 1,
-                'kode_barang' => 'BRG001',
+                'kode_barang' => '',
                 'nama_barang' => 'Laptop Asus ROG',
                 'satuan' => 'Unit',
                 'stok_saat_ini' => 10,
@@ -24,7 +24,7 @@ class BarangSeeder extends Seeder
             [
                 'kategori_id' => 1,
                 'supplier_id' => 1,
-                'kode_barang' => 'BRG002',
+                'kode_barang' => '',
                 'nama_barang' => 'Printer Canon',
                 'satuan' => 'Unit',
                 'stok_saat_ini' => 4,
@@ -32,6 +32,17 @@ class BarangSeeder extends Seeder
                 'lokasi_rak' => 'Rak B1',
                 'kondisi' => 'rusak',
             ],
+            [
+                'kategori_id' => 2,
+                'supplier_id' => 1,
+                'kode_barang' => '',
+                'nama_barang' => 'Meja Belajar',
+                'satuan' => 'Unit',
+                'stok_saat_ini' => 15,
+                'stok_minimum' => 5,
+                'lokasi_rak' => 'Gudang',
+                'kondisi' => 'baik',
+            ]
         ];
 
         foreach ($data as $item) {

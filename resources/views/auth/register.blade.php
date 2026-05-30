@@ -15,7 +15,7 @@
                 </div>
                 <input id="name" name="name" type="text" autocomplete="name" required
                     class="appearance-none block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
-                    placeholder="Budi Santoso" value="{{ old('name') }}">
+                    placeholder="Nama anda" value="{{ old('name') }}">
             </div>
         </div>
 
@@ -27,7 +27,19 @@
                 </div>
                 <input id="email" name="email" type="email" autocomplete="email" required
                     class="appearance-none block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
-                    placeholder="budi@perusahaan.com" value="{{ old('email') }}">
+                    placeholder="nama@example.com" value="{{ old('email') }}">
+            </div>
+        </div>
+        
+        <div>
+            <label for="email" class="block text-sm font-medium text-slate-700">Departemen</label>
+            <div class="mt-1 relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-building text-slate-400"></i>
+                </div>
+                <input id="departemen" name="departemen" type="text" autocomplete="departemen" required
+                    class="appearance-none block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
+                    placeholder="Departemen anda" value="{{ old('departemen') }}">
             </div>
         </div>
 
@@ -41,7 +53,7 @@
                     class="appearance-none block w-full pl-10 pr-10 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
                     placeholder="Minimal 6 karakter">
                 <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none text-slate-400 hover:text-indigo-600 transition-colors">
-                    <i class="fas fa-lock"></i>
+                    <i class="fas fa-eye"></i>
                 </button>
             </div>
         </div>
@@ -56,7 +68,7 @@
                     class="appearance-none block w-full pl-10 pr-10 py-2.5 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
                     placeholder="Ulangi kata sandi">
                 <button type="button" id="togglePasswordConf" class="absolute inset-y-0 right-0 pr-3 flex items-center focus:outline-none text-slate-400 hover:text-indigo-600 transition-colors">
-                    <i class="fas fa-lock"></i>
+                    <i class="fas fa-eye"></i>
                 </button>
             </div>
         </div>
@@ -69,11 +81,14 @@
         </div>
     </form>
 
-    <div class="mt-6 text-center text-sm text-slate-600">
-        Sudah memiliki akun?
-        <a href="{{ url('/login') }}" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-            Masuk di sini
-        </a>
+    <!-- Teks Sudah Punya Akun -->
+    <div class="mt-8 text-center">
+        <p class="text-sm text-slate-600">
+            Sudah memiliki akun?
+            <a href="{{ url('/login') }}" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                Masuk di sini
+            </a>
+        </p>
     </div>
 
     @push('scripts')
@@ -137,6 +152,25 @@
                         }, delayMs);
                     }
                 @endif
+
+                // --- SCRIPT UNTUK TOGGLE PASSWORD & KONFIRMASI PASSWORD ---
+                function setupPasswordToggle(toggleBtnId, inputId) {
+                    const toggleBtn = document.querySelector(toggleBtnId);
+                    const input = document.querySelector(inputId);
+                    
+                    if(toggleBtn && input) {
+                        const icon = toggleBtn.querySelector('i');
+                        toggleBtn.addEventListener('click', function () {
+                            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                            input.setAttribute('type', type);
+                            icon.classList.toggle('fa-eye');
+                            icon.classList.toggle('fa-eye-slash');
+                        });
+                    }
+                }
+
+                setupPasswordToggle('#togglePassword', '#password');
+                setupPasswordToggle('#togglePasswordConf', '#password_confirmation');
             });
         </script>
     @endpush
