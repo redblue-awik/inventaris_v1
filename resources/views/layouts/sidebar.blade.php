@@ -13,42 +13,58 @@
             <i class="fas fa-chart-pie w-6"></i> Dashboard
         </a>
 
+        <!-- Data Barang - Semua bisa lihat -->
         <a href="{{ route('barang') }}"
             class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('barang*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
             <i class="fas fa-boxes-stacked w-6"></i> Data Barang
         </a>
 
-        <a href="{{ route('kategori') }}"
-            class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('kategori*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
-            <i class="fas fa-layer-group w-6"></i> Data Kategori
-        </a>
+        <!-- Data Kategori - Hanya Admin -->
+        @admin
+            <a href="{{ route('kategori') }}"
+                class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('kategori*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
+                <i class="fas fa-layer-group w-6"></i> Data Kategori
+            </a>
+        @endadmin
 
-        <a href="{{ route('supplier') }}"
-            class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('supplier*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
-            <i class="fas fa-truck w-6"></i> Data Supplier
-        </a>
+        <!-- Data Supplier - Hanya Admin -->
+        @admin
+            <a href="{{ route('supplier') }}"
+                class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('supplier*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
+                <i class="fas fa-truck w-6"></i> Data Supplier
+            </a>
+        @endadmin
 
+        <!-- Permintaan - Semua bisa akses -->
         <a href="{{ route('permintaan') }}"
             class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('permintaan*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
             <i class="fas fa-hand-holding-dollar w-6"></i> Permintaan
         </a>
 
-        <a href="{{ route('mutasi_barang') }}"
-            class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('mutasi_barang*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
-            <i class="fas fa-box-archive w-6"></i> Mutasi Barang
-        </a>
-
-        @if (Auth::user()->role === 'admin')
-            <a href="{{ route('user') }}"
-                class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('user*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
-                <i class="fas fa-users w-6"></i> Data User
+        <!-- Mutasi Barang - Hanya Admin & Gudang -->
+        @adminOrGudang
+            <a href="{{ route('mutasi_barang') }}"
+                class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('mutasi_barang*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
+                <i class="fas fa-box-archive w-6"></i> Mutasi Barang
             </a>
+        @endadminOrGudang
 
-            <a href="{{ route('laporan') }}"
-                class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('laporan*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
-                <i class="fas fa-chart-line w-6"></i> Laporan
-            </a>
-        @endif
+        <!-- Admin-only section -->
+        @admin
+            <div class="pt-4 border-t border-slate-200">
+                <p class="px-4 py-2 text-xs font-semibold text-slate-400 uppercase tracking-widest">Admin</p>
+
+                <a href="{{ route('user') }}"
+                    class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('user*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
+                    <i class="fas fa-users w-6"></i> Data User
+                </a>
+
+                <a href="{{ route('laporan') }}"
+                    class="flex items-center px-4 py-3 rounded-xl transition-all {{ request()->is('laporan*') ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-500/20' : 'text-slate-500 hover:text-slate-400 hover:bg-white/5' }}">
+                    <i class="fas fa-chart-line w-6"></i> Laporan
+                </a>
+            </div>
+        @endadmin
     </nav>
 
     <div class="px-4 py-6 border-t border-gray-200 bg-slate-50 flex items-center justify-between">

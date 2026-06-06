@@ -5,6 +5,7 @@
 @section('header_subtitle', 'Kelola informasi permintaan barang inventaris.')
 
 @section('content')
+    {{-- Tombol Tambah hanya untuk Staff (dan admin/gudang bisa juga) --}}
     <div class="flex justify-end mb-6">
         <button data-bs-toggle="modal" data-bs-target="#tambahModal"
             class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md flex items-center justify-center gap-2">
@@ -46,11 +47,24 @@
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right">
+                            {{-- Tombol Detail - Semua bisa lihat --}}
                             <button data-bs-toggle="modal" data-bs-target="#detailModal{{ $item->id }}"
                                 class="text-indigo-600 hover:text-indigo-800 mr-2" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            @if(auth()->user()->role === 'gudang' || auth()->user()->role === 'admin')
+
+                            {{-- Tombol Edit - Hanya untuk permintaan menunggu, staff hanya miliknya sendiri, gudang/admin untuk semua --}}
+                            @if($item->status === 'menunggu')
+                                @if(Auth::user()->role === 'staff' && Auth::user()->id === $item->permohonan_id || Auth::user()->role !== 'staff')
+                                    <button data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}"
+                                        class="text-blue-600 hover:text-blue-800 mr-2" title="Edit Permintaan">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                @endif
+                            @endif
+
+                            {{-- Tombol Approve/Reject - Hanya untuk Gudang & Admin --}}
+                            @adminOrGudang
                                 <button type="button" onclick="checkPermintaanStatus(event, '{{ $item->status }}')"
                                     data-bs-toggle="modal" data-bs-target="#terimaTolaKModal{{ $item->id }}"
                                     class="text-emerald-600 hover:text-emerald-800 mr-2 {{ $item->status !== 'menunggu' ? 'opacity-50 cursor-not-allowed' : '' }}" 
@@ -58,11 +72,17 @@
                                     {{ $item->status !== 'menunggu' ? 'disabled' : '' }}>
                                     <i class="fas fa-check-circle"></i>
                                 </button>
+                            @endadminOrGudang
+
+                            {{-- Tombol Delete - Hanya untuk menunggu, staff hanya miliknya sendiri, gudang/admin untuk semua --}}
+                            @if($item->status === 'menunggu')
+                                @if(Auth::user()->role === 'staff' && Auth::user()->id === $item->permohonan_id || Auth::user()->role !== 'staff')
+                                    <button data-bs-toggle="modal" data-bs-target="#modalHapus{{ $item->id }}"
+                                        class="text-rose-600 hover:text-rose-800" title="Hapus">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                @endif
                             @endif
-                            <button data-bs-toggle="modal" data-bs-target="#modalHapus{{ $item->id }}"
-                                class="text-rose-600 hover:text-rose-800" title="Hapus">
-                                <i class="fas fa-trash"></i>
-                            </button>
                         </td>
                     </tr>
 
@@ -135,8 +155,58 @@
                         </div>
                     </div>
 
-                    <!-- Modal Terima/Tolak Permintaan (Gudang Only) -->
-                    @if(auth()->user()->role === 'gudang' || auth()->user()->role === 'admin')
+                    {{-- Modal Edit Permintaan - Hanya untuk menunggu, staff hanya miliknya, gudang/admin untuk semua --}}
+                    @if($item->status === 'menunggu' && (Auth::user()->role === 'staff' && Auth::user()->id === $item->permohonan_id || Auth::user()->role !== 'staff'))
+                        <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1"
+                            aria-labelledby="editModalLabel{{ $item->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content rounded-xl border-0 shadow-lg">
+                                    <form action="{{ route('permintaan.update', $item->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-header border-b border-slate-100 p-4">
+                                            <h5 class="modal-title font-bold text-slate-800"
+                                                id="editModalLabel{{ $item->id }}">Edit Permintaan</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <div class="mb-3">
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">Barang</label>
+                                                <select name="barang_id" class="form-control rounded-lg w-full" required>
+                                                    <option value="" hidden disabled>Pilih Barang</option>
+                                                    @foreach ($barangs as $barang)
+                                                        <option value="{{ $barang->id }}" {{ $item->barang_id == $barang->id ? 'selected' : '' }}>
+                                                            {{ $barang->nama_barang }} (Stok: {{ $barang->stok_saat_ini }} {{ $barang->satuan }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">Jumlah Diminta</label>
+                                                <input type="number" name="jumlah_diminta" class="form-control rounded-lg w-full"
+                                                    value="{{ $item->jumlah_diminta }}" min="1" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="block text-sm font-medium text-slate-700 mb-1">Keperluan</label>
+                                                <textarea name="keperluan" class="form-control rounded-lg w-full" rows="3">{{ $item->keperluan }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-t border-slate-100 p-4">
+                                            <button type="button"
+                                                class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-300 transition"
+                                                data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit"
+                                                class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition">Simpan Perubahan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Modal Terima/Tolak Permintaan (Gudang & Admin Only) -->
+                    @adminOrGudang
                         <div class="modal fade" id="terimaTolaKModal{{ $item->id }}" tabindex="-1"
                             aria-labelledby="terimaTolaKLabel{{ $item->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -191,7 +261,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    @endadminOrGudang
 
                     <!-- Modal Hapus Permintaan -->
                     <div class="modal fade" id="modalHapus{{ $item->id }}" tabindex="-1">

@@ -5,12 +5,15 @@
 @section('header_subtitle', 'Kelola pengelompokan jenis barang inventaris.')
 
 @section('content')
-    <div class="flex justify-end mb-6">
-        <button data-bs-toggle="modal" data-bs-target="#tambahModal"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md flex items-center justify-center gap-2">
-            <i class="fas fa-plus"></i> Tambah Kategori
-        </button>
-    </div>
+    {{-- Tombol Tambah hanya untuk Admin --}}
+    @admin
+        <div class="flex justify-end mb-6">
+            <button data-bs-toggle="modal" data-bs-target="#tambahModal"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md flex items-center justify-center gap-2">
+                <i class="fas fa-plus"></i> Tambah Kategori
+            </button>
+        </div>
+    @endadmin
 
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
         <table id="table-kategori" class="responsive whitespace-nowrap w-full text-left border-collapse nowrap text-sm">
@@ -29,19 +32,24 @@
                         <td class="px-4 py-3 font-bold text-slate-800">{{ $item->nama_kategori }}</td>
                         <td class="px-4 py-3 text-slate-600">{{ $item->deskripsi ?? '-' }}</td>
                         <td class="px-4 py-3 text-right">
-                            <button data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}"
-                                class="text-indigo-600 hover:text-indigo-800 mr-2">
-                                <i class="fas fa-pen"></i>
-                            </button>
-                            <button data-bs-toggle="modal" data-bs-target="#modalHapusKategori{{ $item->id }}"
-                                class="text-rose-600 hover:text-rose-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            {{-- Edit & Delete hanya untuk Admin --}}
+                            @admin
+                                <button data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}"
+                                    class="text-indigo-600 hover:text-indigo-800 mr-2">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button data-bs-toggle="modal" data-bs-target="#modalHapusKategori{{ $item->id }}"
+                                    class="text-rose-600 hover:text-rose-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            @endadmin
                         </td>
                     </tr>
 
-                    <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1"
-                        aria-labelledby="editModalLabel{{ $item->id }}" aria-hidden="true">
+                    {{-- Modal Edit & Delete hanya untuk Admin --}}
+                    @admin
+                        <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1"
+                            aria-labelledby="editModalLabel{{ $item->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content rounded-xl border-0 shadow-lg">
                                 <form action="{{ route('kategori.update', $item->id) }}" method="POST">
@@ -105,12 +113,15 @@
                             </div>
                         </div>
                     </div>
+                    @endadmin
                 @endforeach
             </tbody>
         </table>
     </div>
 
-    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+    {{-- Modal Tambah & Edit hanya untuk Admin --}}
+    @admin
+        <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-xl border-0 shadow-lg">
                 <form action="{{ route('kategori.store') }}" method="POST">
@@ -142,6 +153,7 @@
             </div>
         </div>
     </div>
+    @endadmin
 @endsection
 
 @push('scripts')

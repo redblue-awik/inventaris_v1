@@ -5,12 +5,15 @@
 @section('header_subtitle', 'Kelola semua stok aset dan inventaris perusahaan.')
 
 @section('content')
-    <div class="flex justify-end mb-6">
-        <button data-bs-toggle="modal" data-bs-target="#tambahModal"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md flex items-center justify-center gap-2">
-            <i class="fas fa-plus"></i> Tambah Barang
-        </button>
-    </div>
+    {{-- Tombol Tambah hanya untuk Admin & Gudang --}}
+    @canManageBarang
+        <div class="flex justify-end mb-6">
+            <button data-bs-toggle="modal" data-bs-target="#tambahModal"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md flex items-center justify-center gap-2">
+                <i class="fas fa-plus"></i> Tambah Barang
+            </button>
+        </div>
+    @endcanManageBarang
 
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
         <table id="table-barang" class="responsive whitespace-nowrap w-full text-left border-collapse nowrap text-sm">
@@ -57,14 +60,23 @@
                         </td>
                         <td class="px-4 py-3 text-slate-600">{{ $barang->kode_barang }}</td>
                         <td class="px-4 py-3 text-right">
-                            <button data-bs-toggle="modal" data-bs-target="#editModal{{ $barang->id }}"
-                                class="text-indigo-600 hover:text-indigo-800 mr-2">
-                                <i class="fas fa-pen"></i>
+                            {{-- Button Detail - Semua bisa lihat --}}
+                            <button data-bs-toggle="modal" data-bs-target="#detailModal{{ $barang->id }}"
+                                class="text-indigo-600 hover:text-indigo-800 mr-2" title="Lihat Detail">
+                                <i class="fas fa-eye"></i>
                             </button>
-                            <button data-bs-toggle="modal" data-bs-target="#modalHapusBarang{{ $barang->id }}"
-                                class="text-rose-600 hover:text-rose-800">
-                                <i class="fas fa-trash"></i>
-                            </button>
+
+                            {{-- Edit & Delete hanya untuk Admin & Gudang --}}
+                            @canManageBarang
+                                <button data-bs-toggle="modal" data-bs-target="#editModal{{ $barang->id }}"
+                                    class="text-indigo-600 hover:text-indigo-800 mr-2">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button data-bs-toggle="modal" data-bs-target="#modalHapusBarang{{ $barang->id }}"
+                                    class="text-rose-600 hover:text-rose-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            @endcanManageBarang
                         </td>
                     </tr>
                     @empty($barangs)
@@ -78,8 +90,85 @@
                         </tr>
                     @endempty
 
-                    <div class="modal fade" id="editModal{{ $barang->id }}" tabindex="-1"
-                        aria-labelledby="editModalLabel{{ $barang->id }}" aria-hidden="true">
+                    {{-- Modal Detail Barang - Semua bisa lihat --}}
+                    <div class="modal fade" id="detailModal{{ $barang->id }}" tabindex="-1"
+                        aria-labelledby="detailModalLabel{{ $barang->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-xl border-0 shadow-lg">
+                                <div class="modal-header border-b border-slate-100 p-4">
+                                    <h5 class="modal-title font-bold text-slate-800"
+                                        id="detailModalLabel{{ $barang->id }}">Detail Barang</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Kode Barang</label>
+                                        <p class="text-slate-800 font-medium">{{ $barang->kode_barang }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Nama Barang</label>
+                                        <p class="text-slate-800 font-medium">{{ $barang->nama_barang }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Kategori</label>
+                                        <p class="text-slate-800 font-medium">{{ $barang->kategori->nama_kategori ?? '-' }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Supplier</label>
+                                        <p class="text-slate-800 font-medium">{{ $barang->supplier->nama_supplier ?? '-' }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Satuan</label>
+                                        <p class="text-slate-800 font-medium">{{ $barang->satuan ?? '-' }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Stok Saat Ini</label>
+                                        <p class="text-slate-800 font-bold text-lg">{{ $barang->stok_saat_ini }} {{ $barang->satuan }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Stok Minimum</label>
+                                        <p class="text-slate-800 font-medium">{{ $barang->stok_minimum }} {{ $barang->satuan }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Lokasi Rak</label>
+                                        <p class="text-slate-800 font-medium">{{ $barang->lokasi_rak ?? '-' }}</p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Kondisi</label>
+                                        @php
+                                            $statusClass = '';
+                                            switch ($barang->kondisi) {
+                                                case 'baik':
+                                                    $statusClass = 'bg-emerald-100 text-emerald-700';
+                                                    break;
+                                                case 'rusak':
+                                                    $statusClass = 'bg-rose-100 text-rose-700';
+                                                    break;
+                                                default:
+                                                    $statusClass = 'bg-slate-100 text-slate-700';
+                                            }
+                                        @endphp
+                                        <span class="px-3 py-1 rounded-lg text-xs font-bold {{ $statusClass }}">{{ ucfirst($barang->kondisi) }}</span>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Tanggal Ditambahkan</label>
+                                        <p class="text-slate-800">{{ $barang->created_at->format('d M Y H:i') }}</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-t border-slate-100 p-4">
+                                    <button type="button"
+                                        class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-300 transition"
+                                        data-bs-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Modal Edit & Delete hanya untuk Admin & Gudang --}}
+                    @canManageBarang
+                        <div class="modal fade" id="editModal{{ $barang->id }}" tabindex="-1"
+                            aria-labelledby="editModalLabel{{ $barang->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content rounded-xl border-0 shadow-lg">
                                 <form action="{{ route('barang.update', $barang->id) }}" method="POST">
@@ -196,15 +285,18 @@
                             </div>
                         </div>
                     </div>
+                    @endcanManageBarang
                 @endforeach
             </tbody>
         </table>
     </div>
 
-    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-xl border-0 shadow-lg">
-                <form action="{{ route('barang.store') }}" method="POST">
+    {{-- Modal Tambah & Edit hanya untuk Admin & Gudang --}}
+    @canManageBarang
+        <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-xl border-0 shadow-lg">
+                    <form action="{{ route('barang.store') }}" method="POST">
                     @csrf
                     <div class="modal-header border-b border-slate-100 p-4">
                         <h5 class="modal-title font-bold text-slate-800" id="tambahModalLabel">Tambah Barang Baru</h5>
@@ -278,6 +370,7 @@
             </div>
         </div>
     </div>
+    @endcanManageBarang
 @endsection
 
 @push('scripts')
