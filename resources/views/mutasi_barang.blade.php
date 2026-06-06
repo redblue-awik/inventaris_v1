@@ -5,12 +5,15 @@
 @section('header_subtitle', 'Kelola mutasi stok dan pergerakan barang inventaris.')
 
 @section('content')
-    <div class="flex justify-end mb-6">
-        <button data-bs-toggle="modal" data-bs-target="#tambahModal"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md flex items-center justify-center gap-2">
-            <i class="fas fa-plus"></i> Tambah Mutasi
-        </button>
-    </div>
+    {{-- Tombol Tambah hanya untuk Admin & Gudang --}}
+    @adminOrGudang
+        <div class="flex justify-end mb-6">
+            <button data-bs-toggle="modal" data-bs-target="#tambahModal"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-md flex items-center justify-center gap-2">
+                <i class="fas fa-plus"></i> Tambah Mutasi
+            </button>
+        </div>
+    @endadminOrGudang
 
     <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
         <table id="table-mutasiBarang" class="responsive nowrap whitespace-nowrap w-full text-left border-collapse text-sm">
@@ -70,24 +73,29 @@
                             </div>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <button data-bs-toggle="modal" data-bs-target="#detailModal{{ $item->id }}"
-                                class="text-indigo-600 hover:text-indigo-800 mr-2" title="Lihat Detail">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}"
-                                class="text-indigo-600 hover:text-indigo-800 mr-2" title="Edit">
-                                <i class="fas fa-pen"></i>
-                            </button>
-                            <button data-bs-toggle="modal" data-bs-target="#modalHapus{{ $item->id }}"
-                                class="text-rose-600 hover:text-rose-800" title="Hapus">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            {{-- Button Detail hanya untuk Admin & Gudang (optional: semua bisa lihat) --}}
+                            @adminOrGudang
+                                <button data-bs-toggle="modal" data-bs-target="#detailModal{{ $item->id }}"
+                                    class="text-indigo-600 hover:text-indigo-800 mr-2" title="Lihat Detail">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}"
+                                    class="text-indigo-600 hover:text-indigo-800 mr-2" title="Edit">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button data-bs-toggle="modal" data-bs-target="#modalHapus{{ $item->id }}"
+                                    class="text-rose-600 hover:text-rose-800" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            @endadminOrGudang
                         </td>
                     </tr>
 
-                    <!-- Modal Detail Mutasi -->
-                    <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
-                        aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
+                    {{-- Modal hanya untuk Admin & Gudang --}}
+                    @adminOrGudang
+                        <!-- Modal Detail Mutasi -->
+                        <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
+                            aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content rounded-xl border-0 shadow-lg">
                                 <div class="modal-header border-b border-slate-100 p-4">
@@ -263,6 +271,7 @@
                             </div>
                         </div>
                     </div>
+                    @endadminOrGudang
                 @empty
                     <tr>
                         <td colspan="7" class="px-4 py-10 text-center text-slate-500">
@@ -277,8 +286,10 @@
         </table>
     </div>
 
-    <!-- Modal Tambah Mutasi Barang -->
-    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+    {{-- Modal Tambah hanya untuk Admin & Gudang --}}
+    @adminOrGudang
+        <!-- Modal Tambah Mutasi Barang -->
+        <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-xl border-0 shadow-lg">
                 <form action="{{ route('mutasi_barang.store') }}" method="POST">
